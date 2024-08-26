@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="ur10e">
+    <xacro:include filename="$(find simplified_ur10e_gazebo)/urdf/ur10e.gazebo.xacro"/>
+    <xacro:include filename="$(find simplified_ur10e_ros2_control)/urdf/ur10e.ros2_control.xacro"/>
+    <xacro:include filename="$(find simplified_ur10e_description)/urdf/ur10e.urdf.xacro"/>
+</robot>

@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+
+<!-- Make the namespace of the robot-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ur10e">
+
+    <!--Define constants-->
+    <xacro:property name="d_2PI" value="6.283185307179586"/>
+    <xacro:property name="d_PI" value="3.141592653589793"/>
+    <xacro:property name="d_half_PI" value="1.5707963267948966"/>
+    
+    <xacro:property name="mass" value="10" />
+    <xacro:property name="length" value="1" />
+    <xacro:property name="width" value="2" />
+    <xacro:property name="height" value="3" />
+
+    <!--Define Rviz colors-->
+     <material name="LightBlue">
+        <color rgba="0.589 0.793 1.0 1.0"/>
+    </material>
+    <material name="LightGrey">
+        <color rgba="0.7 0.7 0.7 1.0"/>
+    </material>
+    <material name="Yellow">
+        <color rgba="1.0 1.0 0.0 1.0"/>
+    </material>
+    
+    <link name="world"/>
+
+    <joint name="world_joint" type="fixed">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="world"/>
+        <child link="base_link"/>
+    </joint>
+
+    <link name="base_link"/>
+
+
+
+    <joint name="box1_joint" type="fixed">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="world"/>
+        <child link="box1"/>
+    </joint>
+    
+    <link name="box1">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${length} ${width} ${height}"/>
+            </geometry>
+            <material name="LightBlue"/>
+        </visual>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="${mass}"/>
+            <inertia
+                ixx="${mass / 12.0 * (width*width + height*height)}" ixy="0.0" ixz="0.0"
+                iyy="${mass / 12.0 * (length*length + height*height)}" iyz="0.0"
+                izz="${mass / 12.0 * (length*length + width*width)}" />
+        </inertial>
+    </link> 
+
+    <joint name="box2_joint" type="fixed">
+        <origin xyz="3.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="world"/>
+        <child link="box2"/>
+    </joint>
+
+    <link name="box2">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="${d_half_PI} 0.0 0.0"/>
+            <geometry>
+                <box size="${length} ${width} ${height}"/>
+            </geometry>
+            <material name="LightGrey"/>
+        </visual>
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="${d_half_PI} 0.0 0.0"/>
+            <mass value="${mass}"/>
+            <inertia
+                ixx="${mass / 12.0 * (width*width + height*height)}" ixy="0.0" ixz="0.0"
+                iyy="${mass / 12.0 * (length*length + height*height)}" iyz="0.0"
+                izz="${mass / 12.0 * (length*length + width*width)}" />
+        </inertial>
+    </link> 
+
+    <joint name="box3_joint" type="fixed">
+        <origin xyz="6.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="world"/>
+        <child link="box3"/>
+    </joint>
+
+    <link name="box3">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="${d_half_PI} 0.0 0.0"/>
+            <geometry>
+                <box size="${length} ${width} ${height}"/>
+            </geometry>
+            <material name="Yellow"/>
+        </visual>
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="${d_half_PI} 0.0 0.0"/>
+            <mass value="${mass}"/>
+            <inertia
+                ixx="${mass / 12.0 * (width*width + height*height)}" ixy="0.0" ixz="0.0"
+                iyy="${mass / 12.0 * (length*length + width*width)}" iyz="0.0"
+                izz="${mass / 12.0 * (length*length + height*height)}" />
+        </inertial>
+    </link> 
+
+    <joint name="box4_joint" type="fixed">
+        <origin xyz="9.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="world"/>
+        <child link="box4"/>
+    </joint>
+
+    <link name="box4">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${length} ${width} ${height}"/>
+            </geometry>
+            <material name="LightBlue"/>
+        </visual>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="${mass}"/>
+            <inertia
+                ixx="${mass / 12.0 * (width*width + height*height)}" ixy="0.0" ixz="0.0"
+                iyy="${mass / 12.0 * (length*length + width*width)}" iyz="0.0"
+                izz="${mass / 12.0 * (length*length + height*height)}" />
+        </inertial>
+    </link> 
+
+    <joint name="box5_joint" type="fixed">
+        <origin xyz="12.0 0.0 0.0" rpy="0.0 ${d_half_PI} 0.0"/>
+        <parent link="world"/>
+        <child link="box5"/>
+    </joint>
+    
+    <link name="box5">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${length} ${width} ${height}"/>
+            </geometry>
+            <material name="LightGrey"/>
+        </visual>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="${mass}"/>
+            <inertia
+                ixx="${mass / 12.0 * (width*width + height*height)}" ixy="0.0" ixz="0.0"
+                iyy="${mass / 12.0 * (length*length + height*height)}" iyz="0.0"
+                izz="${mass / 12.0 * (length*length + width*width)}" />
+        </inertial>
+    </link> 
+
+</robot>
