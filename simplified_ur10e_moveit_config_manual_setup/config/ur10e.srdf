@@ -54,6 +54,12 @@
         <joint name="wrist_2_joint" value="0"/>
         <joint name="wrist_3_joint" value="1.57"/>
     </group_state>
+    <group_state name="open" group="ur_grip">
+        <joint name="gripper_joint_1" value="0.04"/>
+    </group_state>
+    <group_state name="close" group="ur_grip">
+        <joint name="gripper_joint_1" value="0.0"/>
+    </group_state>
     <group_state name="near_collision" group="ur_arm_with_grip">
         <joint name="elbow_joint" value="0.538"/>
         <joint name="gripper_joint_1" value="0.0177"/>
