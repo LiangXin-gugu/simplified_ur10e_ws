@@ -21,9 +21,10 @@ def generate_launch_description():
 
   default_robot_name = 'ur10e'
   gazebo_launch_file_path = 'launch'
+  gazebo_models_path = 'models'
   rviz_config_file_path = 'rviz/ur10e_view_description.rviz'
   urdf_file_path = 'urdf/ur10e_gazebo_launch.xacro'
-  world_file_path = 'worlds/empty.world'
+  world_file_path = 'worlds/pick_place_demo.world'
 
   # Set the path to different files and folders.  
   pkg_ros_gz_sim = FindPackageShare(package='ros_gz_sim').find('ros_gz_sim')  
@@ -36,6 +37,7 @@ def generate_launch_description():
   default_rviz_config_path = os.path.join(pkg_share_description, rviz_config_file_path)  
   default_urdf_model_path = os.path.join(pkg_share_gazebo, urdf_file_path)
   gazebo_launch_file_path = os.path.join(pkg_share_gazebo, gazebo_launch_file_path)   
+  gazebo_models_path = os.path.join(pkg_share_gazebo, gazebo_models_path)
   world_path = os.path.join(pkg_share_gazebo, world_file_path)
   
   # Launch configuration variables specific to simulation
@@ -117,7 +119,13 @@ def generate_launch_description():
     default_value='0.0',
     description='yaw angle of initial orientation, radians')
     
-  # Specify the actions
+  # Specify the actions  
+
+  # set gazebo resource path, so that models could be found.
+  set_env_vars_resources = AppendEnvironmentVariable(
+    'GZ_SIM_RESOURCE_PATH',
+    gazebo_models_path)
+  
   # Start arm controller
   start_arm_controller_cmd = ExecuteProcess(
     cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
@@ -230,6 +238,7 @@ def generate_launch_description():
   ld.add_action(declare_yaw_cmd)  
 
   # Add any actions
+  ld.add_action(set_env_vars_resources)
   ld.add_action(start_gazebo_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
   ld.add_action(start_rviz_cmd)

@@ -10,12 +10,12 @@ def generate_launch_description():
     # Constants for paths to different files and folders
     package_name_gazebo = 'simplified_ur10e_gazebo'
     package_name_moveit_config = 'simplified_ur10e_moveit_config_manual_setup'
-    # package_name_mtc = 'simplified_ur10e_moveit_mtc_tutorial'
+    package_name_mtc = 'simplified_ur10e_moveit_mtc_tutorial'
 
     # Set the path to different files and folders
     pkg_share_gazebo = FindPackageShare(package=package_name_gazebo).find(package_name_gazebo)
     pkg_share_moveit_config = FindPackageShare(package=package_name_moveit_config).find(package_name_moveit_config)
-    # pkg_share_mtc = FindPackageShare(package=package_name_mtc).find(package_name_mtc)
+    pkg_share_mtc = FindPackageShare(package=package_name_mtc).find(package_name_mtc)
 
 
     # Paths for various configuration files
@@ -26,7 +26,7 @@ def generate_launch_description():
     kinematics_file_path = 'config/kinematics.yaml'
     pilz_cartesian_limits_file_path = 'config/pilz_cartesian_limits.yaml'
     initial_positions_file_path = 'config/initial_positions.yaml'
-    # mtc_node_params_file_path = 'config/mtc_node_params.yaml'
+    mtc_node_params_file_path = 'config/mtc_node_params.yaml'
 
     # Set the full paths
     urdf_model_path = os.path.join(pkg_share_gazebo, urdf_file_path)
@@ -36,11 +36,12 @@ def generate_launch_description():
     kinematics_file_path = os.path.join(pkg_share_moveit_config, kinematics_file_path)
     pilz_cartesian_limits_file_path = os.path.join(pkg_share_moveit_config, pilz_cartesian_limits_file_path)
     initial_positions_file_path = os.path.join(pkg_share_moveit_config, initial_positions_file_path)
-    # mtc_node_params_file_path = os.path.join(pkg_share_mtc, mtc_node_params_file_path)
+    mtc_node_params_file_path = os.path.join(pkg_share_mtc, mtc_node_params_file_path)
 
 
     # Launch configuration variables
     use_sim_time = LaunchConfiguration('use_sim_time')
+    demo = LaunchConfiguration('demo')
 
 
     # Declare the launch arguments
@@ -49,6 +50,13 @@ def generate_launch_description():
         default_value='true',
         description='Use simulation (Gazebo) clock if true')
 
+    declare_demo_cmd = DeclareLaunchArgument(
+        name="demo",
+        default_value="alternative_path_costs",
+        description="Which demo to run",
+        choices=["alternative_path_costs", "cartesian", "fallbacks_move_to", 
+                 "ik_clearance_cost", "modular", "mtc_node", "pick_place_demo"])
+  
 
     # Load the robot configuration
     # Typically, you would also have this line in here: .robot_description(file_path=urdf_model_path)
@@ -74,9 +82,9 @@ def generate_launch_description():
     )
 
     # MTC Demo node
-    pick_place_demo = Node(
+    node = Node(
         package="simplified_ur10e_moveit_mtc_tutorial",
-        executable="mtc_node",
+        executable=demo,
         output="screen",
         parameters=[
             moveit_config.robot_description,
@@ -86,7 +94,7 @@ def generate_launch_description():
             moveit_config.pilz_cartesian_limits,
             moveit_config.planning_pipelines,
             {'use_sim_time': use_sim_time},
-            # mtc_node_params_file_path,
+            mtc_node_params_file_path,
         ],
     )
 
@@ -95,7 +103,8 @@ def generate_launch_description():
 
     # Declare the launch options
     ld.add_action(declare_use_sim_time_cmd)
+    ld.add_action(declare_demo_cmd)
     # Add any actions
-    ld.add_action(pick_place_demo)
+    ld.add_action(node)
 
     return ld

@@ -54,6 +54,22 @@
         <joint name="wrist_2_joint" value="0"/>
         <joint name="wrist_3_joint" value="1.57"/>
     </group_state>
+    <group_state name="pose_random1" group="ur_arm">
+        <joint name="elbow_joint" value="1.57"/>
+        <joint name="shoulder_lift_joint" value="-1.57"/>
+        <joint name="shoulder_pan_joint" value="1.57"/>
+        <joint name="wrist_1_joint" value="1.57"/>
+        <joint name="wrist_2_joint" value="-1.57"/>
+        <joint name="wrist_3_joint" value="1.57"/>
+    </group_state>
+    <group_state name="pose_random2" group="ur_arm">
+        <joint name="elbow_joint" value="-1.57"/>
+        <joint name="shoulder_lift_joint" value="-1.57"/>
+        <joint name="shoulder_pan_joint" value="2.44"/>
+        <joint name="wrist_1_joint" value="-0.7"/>
+        <joint name="wrist_2_joint" value="0.0"/>
+        <joint name="wrist_3_joint" value="1.57"/>
+    </group_state>
     <group_state name="open" group="ur_grip">
         <joint name="gripper_joint_1" value="0.04"/>
     </group_state>

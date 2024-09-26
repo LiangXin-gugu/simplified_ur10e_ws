@@ -39,14 +39,37 @@ arm_controller:
     # If true, When set to true, the controller will not use any feedback from the system 
     # (e.g., joint positions, velocities, efforts) to compute the control commands. 
    
-    open_loop_control: true
+    open_loop_control: false
 
     # When set to true, it allows the controller to integrate the trajectory goals it receives. 
     # This means that if the goal trajectory only specifies positions, the controller will 
     # numerically integrate the positions to compute the velocities and accelerations required 
     # to follow the trajectory.
     
-    allow_integration_in_goal_trajectories: true
+    allow_integration_in_goal_trajectories: false
+
+    constraints:
+      stopped_velocity_tolerance: 0.001
+      goal_time: 2.0
+      shoulder_pan_joint:
+        goal: 0.05
+        trajectory: 0.0
+      shoulder_lift_joint:
+        goal: 0.05
+        trajectory: 0.0
+      elbow_joint:
+        goal: 0.05
+        trajectory: 0.0
+      wrist_1_joint:
+        goal: 0.05
+        trajectory: 0.0
+      wrist_2_joint:
+        goal: 0.05
+        trajectory: 0.0
+      wrist_3_joint:
+        goal: 0.05
+        trajectory: 0.0
+      
 
 grip_controller:
   ros__parameters:

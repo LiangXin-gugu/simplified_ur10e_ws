@@ -1,25 +1,25 @@
 mtc_node:
   ros__parameters:
     # General parameters
-    execute: false
-    max_solutions: 10
+    execute: true
+    max_solutions: 1
     spawn_table: true
 
     # Controller parameters
-    controller_names: 
-      - "arm_controller"
-      - "grip_controller"
+    # controller_names: 
+    #   - "arm_controller"
+    #   - "grip_controller"
 
     # Robot configuration parameters
-    arm_group_name: "ur_arm"
-    gripper_group_name: "ur_grip"
-    gripper_frame: "flange_base"
-    gripper_open_pose: "open"
-    gripper_close_pose: "close"
-    arm_home_pose: "home"
+    # arm_group_name: "ur_arm"
+    # gripper_group_name: "ur_grip"
+    # gripper_frame: "flange_base"
+    # gripper_open_pose: "open"
+    # gripper_close_pose: "close"
+    # arm_home_pose: "home"
 
     # Scene frame parameters
-    world_frame: "base_link"
+    # world_frame: "base_link"
 
     # # Table parameters
     # table_name: "table"

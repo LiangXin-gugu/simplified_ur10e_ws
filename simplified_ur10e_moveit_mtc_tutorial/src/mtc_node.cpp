@@ -87,9 +87,9 @@ MTCTaskNode::MTCTaskNode(const rclcpp::NodeOptions& options)
   };
 
   // General parameters
-  declare_parameter("execute", false, "Whether to execute the planned task");
-  declare_parameter("max_solutions", 10, "Maximum number of solutions to compute");
-  // declare_parameter("spawn_table", true, "Whether to spawn a table in the planning scene");
+  declare_parameter("execute", true, "Whether to execute the planned task");
+  declare_parameter("max_solutions", 5, "Maximum number of solutions to compute");
+  declare_parameter("spawn_table", true, "Whether to spawn a table in the planning scene");
 
   // Controller parameters
   declare_parameter("controller_names", std::vector<std::string>{"arm_controller", "grip_action_controller"}, "Names of the controllers to use");
@@ -107,15 +107,15 @@ MTCTaskNode::MTCTaskNode(const rclcpp::NodeOptions& options)
   declare_parameter("world_frame", "world", "Name of the world frame");
 
   // Table parameters
-  // declare_parameter("table_name", "table", "Name of the table in the planning scene");
-  // declare_parameter("table_reference_frame", "base_link", "Reference frame for the table");
-  // declare_parameter("table_dimensions", std::vector<double>{0.10, 0.20, 0.03}, "Dimensions of the table [x, y, z]");
-  // declare_parameter("table_pose", std::vector<double>{0.22, 0.12, 0.0, 0.0, 0.0, 0.0}, "Pose of the table [x, y, z, roll, pitch, yaw]");
+  declare_parameter("table_name", "table", "Name of the table in the planning scene");
+  declare_parameter("table_reference_frame", "world", "Reference frame for the table");
+  declare_parameter("table_dimensions", std::vector<double>{10, 10, 0.01}, "Dimensions of the table [x, y, z]");
+  declare_parameter("table_pose", std::vector<double>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, "Pose of the table [x, y, z, roll, pitch, yaw]");
 
   // Object parameters
   declare_parameter("object_name", "object", "Name of the object to be manipulated");
   declare_parameter("object_reference_frame", "world", "Reference frame for the object");
-  declare_parameter("object_dimensions", std::vector<double>{0.1, 0.02}, "Dimensions of the object [height, radius]");
+  declare_parameter("object_dimensions", std::vector<double>{0.5, 0.02}, "Dimensions of the object [height, radius]");
   declare_parameter("object_pose", std::vector<double>{0.5, -0.25, 0.0, 0.0, 0.0, 0.0}, "Initial pose of the object [x, y, z, roll, pitch, yaw]");
 
   // Timeout parameters
@@ -142,7 +142,8 @@ MTCTaskNode::MTCTaskNode(const rclcpp::NodeOptions& options)
   declare_parameter("grasp_pose_min_solution_distance", 1.0, "Minimum distance in joint-space units between IK solutions for grasp pose");
 
   // Grasp and place parameters
-  declare_parameter("grasp_frame_transform", std::vector<double>{0.0, 0.0, 0.1, 0.0, M_PI / 2, 0.0}, "Transform from gripper frame to grasp frame [x, y, z, roll, pitch, yaw]"); //所夹持物体的坐标系，和hand_group的parant_link坐标系之间的关系。
+  //grasp_frame_transform: 所夹持物体的中心坐标系，和hand_group的parant_link坐标系之间的关系;。
+  declare_parameter("grasp_frame_transform", std::vector<double>{0.0, 0.0, 0.1, 0.0, M_PI / 2, 0.0}, "Transform from gripper frame to grasp frame [x, y, z, roll, pitch, yaw]");
   declare_parameter("place_pose", std::vector<double>{0.0, 0.5, 0.0, 0.0, 0.0, 0.0}, "Pose where the object should be placed [x, y, z, roll, pitch, yaw]");
   declare_parameter("place_surface_offset", -0.03, "Offset from the surface when placing the object");
 
@@ -164,16 +165,43 @@ MTCTaskNode::MTCTaskNode(const rclcpp::NodeOptions& options)
   RCLCPP_INFO(this->get_logger(), "All parameters have been declared with descriptions");
 }
 
-// // These next lines define a getter function to get the node base interface, which will be used for the executor later.
-// rclcpp::node_interfaces::NodeBaseInterface::SharedPtr MTCTaskNode::getNodeBaseInterface()
-// {
-//   return node_->get_node_base_interface();
-// }
 
 void MTCTaskNode::setupPlanningScene()
 {
   // Create a planning scene interface to interact with the world
   moveit::planning_interface::PlanningSceneInterface psi;
+
+    // Get general parameters
+  auto spawn_table = this->get_parameter("spawn_table").as_bool();
+
+  // Get table parameters
+  auto table_name = this->get_parameter("table_name").as_string();
+  auto table_dimensions = this->get_parameter("table_dimensions").as_double_array();
+  auto table_pose_param = this->get_parameter("table_pose").as_double_array();
+  auto table_reference_frame = this->get_parameter("table_reference_frame").as_string();
+
+  if (spawn_table) {
+    // Create a table collision object
+    geometry_msgs::msg::Pose table_pose = vectorToPose(table_pose_param);
+    moveit_msgs::msg::CollisionObject table_object;
+    table_object.id = table_name;
+    table_object.header.frame_id = table_reference_frame;
+    table_object.primitives.resize(1);
+    table_object.primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
+    table_object.primitives[0].dimensions = { table_dimensions.at(0), table_dimensions.at(1),
+                                      table_dimensions.at(2) };
+    table_pose.position.z -= 0.5 * table_dimensions[2]; // align surface with world
+    table_object.primitive_poses.push_back(table_pose);
+
+    // Add the table to the planning scene
+    if (!psi.applyCollisionObject(table_object)) {
+      RCLCPP_ERROR(this->get_logger(), "Failed to spawn table object: %s", table_object.id.c_str());
+      throw std::runtime_error("Failed to spawn table object: " + table_object.id);
+    }
+    RCLCPP_INFO(this->get_logger(), "Added table to planning scene");
+  } else {
+    RCLCPP_INFO(this->get_logger(), "Skipping table spawn as per configuration");
+  }
 
   // Get object parameters
   auto object_name = this->get_parameter("object_name").as_string();
@@ -305,8 +333,8 @@ mtc::Task MTCTaskNode::createTask()
   auto object_pose = this->get_parameter("object_pose").as_double_array();
 
   // Table parameters
-  // auto table_name = this->get_parameter("table_name").as_string();
-  // auto table_reference_frame = this->get_parameter("table_reference_frame").as_string();
+  auto table_name = this->get_parameter("table_name").as_string();
+  auto table_reference_frame = this->get_parameter("table_reference_frame").as_string();
 
   // Grasp and place parameters
   auto grasp_frame_transform = this->get_parameter("grasp_frame_transform").as_double_array();
@@ -523,6 +551,17 @@ mtc::Task MTCTaskNode::createTask()
     }
     
     /****************************************************
+---- *       Allow collision (object,  surface)        *
+     ***************************************************/
+    {
+      // Allows the planner to generate valid trajectories where the object remains in contact 
+      // with the support surface until it's lifted.
+      auto stage = std::make_unique<mtc::stages::ModifyPlanningScene>("allow collision (object,support)");
+      stage->allowCollisions({ object_name }, {table_name}, true);
+      grasp->insert(std::move(stage));
+    }
+
+    /****************************************************
 ---- *       Lift object                               *
      ***************************************************/
     {
@@ -541,6 +580,21 @@ mtc::Task MTCTaskNode::createTask()
       grasp->insert(std::move(stage_lift_object));
     }
 
+    /****************************************************
+---- *       Forbid collision (object, surface)*       *
+     ***************************************************/
+    {
+      // Forbid collisions between the picked object and the support surface. 
+      // This is important after the object has been lifted to ensure it doesn't accidentally 
+      // collide with the surface during subsequent movements.
+      auto stage = std::make_unique<mtc::stages::ModifyPlanningScene>("forbid collision (object,surface)");
+      stage->allowCollisions({ object_name }, {table_name}, false);
+      grasp->insert(std::move(stage));      
+	}	 
+  
+	// Add the serial container to the robot's to-do list
+	// This serial container contains all the sequential steps we've created for grasping
+	// and lifting the object 
     task.add(std::move(grasp));
   }
 
@@ -694,13 +748,7 @@ int main(int argc, char** argv)
   rclcpp::executors::MultiThreadedExecutor executor;
   executor.add_node(mtc_task_node);
 
-  // auto spin_thread = std::make_unique<std::thread>([&executor, &mtc_task_node]() {
-  //   executor.add_node(mtc_task_node->getNodeBaseInterface());
-  //   executor.spin();
-  //   executor.remove_node(mtc_task_node->getNodeBaseInterface());
-  // });
-
-   // Set up the planning scene and execute the task
+  // Set up the planning scene and execute the task
   try {
     RCLCPP_INFO(mtc_task_node->get_logger(), "Setting up planning scene");
     mtc_task_node->setupPlanningScene();
@@ -717,9 +765,5 @@ int main(int argc, char** argv)
   // Cleanup
   rclcpp::shutdown();
 
-  // mtc_task_node->setupPlanningScene();
-  // mtc_task_node->doTask();
-  // spin_thread->join();
-  // rclcpp::shutdown();
   return 0;
 }
