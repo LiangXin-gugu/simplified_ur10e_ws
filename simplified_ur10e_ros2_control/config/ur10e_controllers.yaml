@@ -74,5 +74,8 @@ arm_controller:
 grip_controller:
   ros__parameters:
     joint: gripper_joint_1
-
+    goal_tolerance: 0.001
+    allow_stalling: true
+    stall_timeout: 0.1
+    stall_velocity_threshold: 0.1
 

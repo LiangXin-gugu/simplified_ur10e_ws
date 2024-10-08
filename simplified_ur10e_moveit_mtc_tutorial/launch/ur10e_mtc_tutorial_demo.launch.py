@@ -52,7 +52,7 @@ def generate_launch_description():
 
     declare_demo_cmd = DeclareLaunchArgument(
         name="demo",
-        default_value="alternative_path_costs",
+        default_value="pick_place_demo",
         description="Which demo to run",
         choices=["alternative_path_costs", "cartesian", "fallbacks_move_to", 
                  "ik_clearance_cost", "modular", "mtc_node", "pick_place_demo"])

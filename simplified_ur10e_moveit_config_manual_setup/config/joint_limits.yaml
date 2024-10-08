@@ -13,54 +13,54 @@ joint_limits:
     max_velocity: 1.57
     has_acceleration_limits: true
     max_acceleration: 0.26
-    has_deceleration_limits: true
-    max_deceleration: -0.26
+    # has_deceleration_limits: true
+    # max_deceleration: -0.26
   gripper_joint_1:
     has_velocity_limits: true
     max_velocity: 0.5
     has_acceleration_limits: true
     max_acceleration: 0.5
-    has_deceleration_limits: true
-    max_deceleration: -0.5
+    # has_deceleration_limits: true
+    # max_deceleration: -0.5
   gripper_joint_2:
     has_velocity_limits: true
     max_velocity: 0.5
     has_acceleration_limits: true
     max_acceleration: 0.5
-    has_deceleration_limits: true
-    max_deceleration: -0.5
+    # has_deceleration_limits: true
+    # max_deceleration: -0.5
   shoulder_lift_joint:
     has_velocity_limits: true
     max_velocity: 1.57
     has_acceleration_limits: true
     max_acceleration: 0.26
-    has_deceleration_limits: true
-    max_deceleration: -0.26
+    # has_deceleration_limits: true
+    # max_deceleration: -0.26
   shoulder_pan_joint:
     has_velocity_limits: true
     max_velocity: 1.57
     has_acceleration_limits: true
     max_acceleration: 0.26
-    has_deceleration_limits: true
-    max_deceleration: -0.26
+    # has_deceleration_limits: true
+    # max_deceleration: -0.26
   wrist_1_joint:
     has_velocity_limits: true
     max_velocity: 1.57
     has_acceleration_limits: true
     max_acceleration: 0.26
-    has_deceleration_limits: true
-    max_deceleration: -0.26
+    # has_deceleration_limits: true
+    # max_deceleration: -0.26
   wrist_2_joint:
     has_velocity_limits: true
     max_velocity: 1.57
     has_acceleration_limits: true
     max_acceleration: 0.26
-    has_deceleration_limits: true
-    max_deceleration: -0.26
+    # has_deceleration_limits: true
+    # max_deceleration: -0.26
   wrist_3_joint:
     has_velocity_limits: true
     max_velocity: 1.57
     has_acceleration_limits: true
     max_acceleration: 0.26
-    has_deceleration_limits: true
-    max_deceleration: -0.26
+    # has_deceleration_limits: true
+    # max_deceleration: -0.26
