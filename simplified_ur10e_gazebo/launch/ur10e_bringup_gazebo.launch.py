@@ -24,7 +24,7 @@ def generate_launch_description():
   gazebo_models_path = 'models'
   rviz_config_file_path = 'rviz/ur10e_view_description.rviz'
   urdf_file_path = 'urdf/ur10e_gazebo_launch.xacro'
-  world_file_path = 'worlds/pick_place_demo.world'
+  world_file_path = 'worlds/empty_no_ground.world'
 
   # Set the path to different files and folders.  
   pkg_ros_gz_sim = FindPackageShare(package='ros_gz_sim').find('ros_gz_sim')  

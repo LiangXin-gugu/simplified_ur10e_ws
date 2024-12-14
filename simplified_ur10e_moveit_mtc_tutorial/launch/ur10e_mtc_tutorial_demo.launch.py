@@ -55,7 +55,7 @@ def generate_launch_description():
         default_value="pick_place_demo",
         description="Which demo to run",
         choices=["alternative_path_costs", "cartesian", "fallbacks_move_to", 
-                 "ik_clearance_cost", "modular", "mtc_node", "pick_place_demo"])
+                 "ik_clearance_cost", "modular", "mtc_node", "pick_place_demo", "IK_test"])
   
 
     # Load the robot configuration
@@ -96,6 +96,7 @@ def generate_launch_description():
             {'use_sim_time': use_sim_time},
             mtc_node_params_file_path,
         ],
+        ros_arguments=['--log-level', 'debug'],
     )
 
     # Create the launch description and populate

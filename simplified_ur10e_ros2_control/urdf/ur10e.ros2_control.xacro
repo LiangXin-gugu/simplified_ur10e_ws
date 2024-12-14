@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro" name="ur10e">
-    <ros2_control name="RobotSystem" type="system">
+    <ros2_control name="IgnitionSystem" type="system">
         <hardware>
             <plugin>ign_ros2_control/IgnitionSystem</plugin>
         </hardware>

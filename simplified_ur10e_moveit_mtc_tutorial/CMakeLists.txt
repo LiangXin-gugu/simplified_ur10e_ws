@@ -71,6 +71,7 @@ demo(ik_clearance_cost)
 demo(modular)
 demo(mtc_node)
 demo(pick_place_demo)
+demo(IK_test)
 
 # This line below links the pick_place_demo_parameters library (pick_place_demo_parameters.yaml/pick_place_demo_parameters.hpp)
 # to the hello_moveit_task_constructor_pick_place_task library (src/pick_place_task.cpp)

@@ -530,7 +530,7 @@ bool PickPlaceTask::init(const rclcpp::Node::SharedPtr& node, const pick_place_d
 	 *                                                    *
 	 *****************************************************/
 	{
-		auto stage = std::make_unique<stages::MoveTo>("move home", ompl_planner_arm);
+		auto stage = std::make_unique<stages::MoveTo>("move home", ompl_planner_arm);//interpolation_planner; ompl_planner_arm
 		stage->setGroup(params.arm_group_name);
 		stage->setGoal(params.arm_home_pose);
 		stage->restrictDirection(stages::MoveTo::FORWARD);

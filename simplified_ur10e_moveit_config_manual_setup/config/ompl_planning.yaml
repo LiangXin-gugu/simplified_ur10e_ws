@@ -46,6 +46,10 @@ planner_configs:
     type: geometric::RRT
     range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup()
     goal_bias: 0.05  # When close to goal select goal, with this probability? default: 0.05
+  RRTGugukConfigDefault:
+    type: geometric::RRTGugu
+    range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup()
+    goal_bias: 0.05  # When close to goal select goal, with this probability? default: 0.05
   RRTConnectkConfigDefault:
     type: geometric::RRTConnect
     range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup()
@@ -142,7 +146,7 @@ planner_configs:
     type: geometric::TrajOpt
 
 ur_arm:
-  default_planner_config: RRTConnectkConfigDefault
+  default_planner_config: RRTGugukConfigDefault
   planner_configs:
     - APSConfigDefault
     - SBLkConfigDefault
@@ -151,6 +155,7 @@ ur_arm:
     - BKPIECEkConfigDefault
     - KPIECEkConfigDefault
     - RRTkConfigDefault
+    - RRTGugukConfigDefault
     - RRTConnectkConfigDefault
     - RRTstarkConfigDefault
     - TRRTkConfigDefault
